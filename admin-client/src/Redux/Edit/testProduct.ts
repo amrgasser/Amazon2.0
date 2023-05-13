@@ -2,6 +2,7 @@ const product = JSON.parse(`{
   "name": "My amazing Tshirt 2",
   "description": "This is a Tshirt",
   "category": "tshirt",
+  "subcategories":[],
   "price": 20.00,
   "material": "cotton",
   "colors": {

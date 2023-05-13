@@ -14,9 +14,12 @@ const editSlice = createSlice({
             const newParams = action.payload
             state.product = { ...state.product, ...newParams };
         },
+        reset(state) {
+            state.product = {}
+        }
     }
 })
 
-export const { update } = editSlice.actions
+export const { update, reset } = editSlice.actions
 
 export default editSlice.reducer
