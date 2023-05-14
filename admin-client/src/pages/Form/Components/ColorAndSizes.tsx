@@ -1,3 +1,5 @@
+//@ts-nocheck
+
 import { Link } from "react-router-dom"
 import FileUpload from "./FileUpload"
 import DropDown from "./DropDown"
@@ -5,51 +7,76 @@ import { useState } from "react"
 import { useAppSelector, useAppDispatch } from "../../../Redux/Store/hooks"
 import { update } from "../../../Redux/Edit/productEdit"
 
-const ColorAndSizes = () => {
-    const colors = {
-        red: ["/1682240979621.jpeg", "/1682240979621.jpeg", "/1682240979621.jpeg", "/1682240979621.jpeg", "/1682240979621.jpeg", "/1682240979621.jpeg"],
+const convertArrayToObject = (array: [any]) => {
+    const result = {}
+    for (let i = 0; i < array.length; i++) {
+        result[array[i].color] = array[i].images
     }
-    const colorKeys = Object.keys(colors)
+    return result
+}
 
-    const newColors = colorKeys.map((key) => {
-        return ({
-            color: key,
-            images: colors[key as keyof typeof colors]
-        })
-    })
-    const [colorsArray, setColorsArray] = useState(newColors)
+const convertObjectToArray = (object: any) => {
+    return Object.keys(object).map(key => ({ color: key, images: object[key] }))
+}
+type Option = {
+    value: string,
+    label: string
+}
 
-    const handleAddColor = () => {
-        setColorsArray([...colorsArray, { color: "", images: [] }])
+
+const ColorAndSizes = () => {
+    const product = useAppSelector(state => state.update.product)
+    const dispatch = useAppDispatch()
+
+    console.log(product);
+
+    const colorsArray = convertObjectToArray(product.colors)
+
+    const addNewColor = () => {
+        colorsArray.push({ color: "", images: [] })
+
+        const toUpdate = convertArrayToObject(colorsArray)
+        dispatch(update({ colors: toUpdate }))
+    }
+    const updateOptions = (target: Option, index: number) => {
+        colorsArray[index].color = target.value
+
+        const toUpdate = convertArrayToObject(colorsArray)
+        dispatch(update({ colors: toUpdate }))
     }
 
     const handleDeleteColor = (index: number) => {
-        console.log(index);
-        const list = [...colorsArray]
-        list.splice(index, 1)
-        setColorsArray(list)
+        colorsArray.splice(index, 1)
+
+        const toUpdate = convertArrayToObject(colorsArray)
+        dispatch(update({ colors: toUpdate }))
     }
+    const handleImageDelete = (i: number, globalIndex: number) => {
+        const images = [...colorsArray[globalIndex].images]
+        images.splice(i, 1)
+        colorsArray[globalIndex].images = images
 
-    const handleColorChange = (event: any, index: number) => {
-        console.log(event);
-
-        const list = [...colorsArray]
-        console.log(list);
-
-        list[index].color = event.value
-
-        setColorsArray(list)
+        const toUpdate = convertArrayToObject(colorsArray)
+        dispatch(update({ colors: toUpdate }))
     }
+    const handleImageUpload = async (e: any, globalIndex: number) => {
+        const listFiles = (e.target.files)
+        const images = [...colorsArray[globalIndex].images]
 
-    // update new product test
-    const productToUpdate = useAppSelector(state => state.update.product);
-    const dispatch = useAppDispatch()
+        for (let i = 0; i < listFiles.length; i++) {
+            const reader = new FileReader()
+            reader.onload = () => {
+                images.push(reader.result)
+                if (colorsArray[globalIndex].images.length + listFiles.length == images.length) {
 
-
-    const testUpdate = () => {
-        dispatch(update({ name: "new name" }))
+                    colorsArray[globalIndex].images = images
+                    const toUpdate = convertArrayToObject(colorsArray)
+                    dispatch(update({ colors: toUpdate }))
+                }
+            }
+            reader.readAsDataURL(listFiles[i])
+        }
     }
-    // console.log(productToUpdate);
 
 
     return (
@@ -62,8 +89,8 @@ const ColorAndSizes = () => {
             {colorsArray.map((color, index) => {
                 return (
                     <div className="flex flex-col gap-5.5 p-6.5 border border-stroke" key={index}>
-                        <DropDown label={"Color"} isMulti={false} defaultValue={color.color} handleChange={handleColorChange} index={index} />
-                        <FileUpload variation={1} items={color.images} index={index} setState={setColorsArray} array={colorsArray} />
+                        <DropDown label={"Color"} isMulti={false} defaultValue={color.color} updateOptions={updateOptions} index={index} />
+                        <FileUpload variation={1} items={color.images} index={index} globalIndex={index} handleImageDelete={handleImageDelete} handleImageUpload={handleImageUpload} />
                         <Link
                             to="#"
                             className="inline-flex items-center justify-center bg-meta-3 py-4 px-10 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10"
@@ -77,9 +104,9 @@ const ColorAndSizes = () => {
             <Link
                 to="#"
                 className="inline-flex items-center justify-center bg-meta-3 py-4 px-10 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10"
-                onClick={testUpdate}
+                onClick={addNewColor}
             >
-                Button
+                Add New
             </Link>
         </div>
     )

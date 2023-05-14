@@ -6,7 +6,7 @@ import { update } from '../../../Redux/Edit/productEdit'
 
 
 const DropDown = (props: any) => {
-    const { label, index, isMulti } = props
+    const { label, index, isMulti, updateOptions } = props
     const product = useAppSelector(state => state.update.product)
     const dispatch = useAppDispatch()
 
@@ -15,17 +15,7 @@ const DropDown = (props: any) => {
         { value: "green", label: "green" },
         { value: "blue", label: "blue" },
     ]
-    type Option = {
-        value: string,
-        label: string
-    }
-    const updateOptions = (target: Option[]) => {
-        const Subcategories = []
-        target.map((target) => Subcategories.push(target.value))
-        dispatch(update({ subcategories: Subcategories }))
-        console.log(product);
 
-    }
 
     return (
         <div className="flex flex-col gap-5.5 p-6.5">
@@ -34,7 +24,7 @@ const DropDown = (props: any) => {
                     {label}
                 </label>
                 <div className="relative z-20 bg-transparent dark:bg-form-input">
-                    <Select options={options} isMulti={true} onChange={(value) => updateOptions(value)} />
+                    <Select options={options} isMulti={isMulti} onChange={(value) => updateOptions(value, index)} />
                 </div>
             </div>
         </div>

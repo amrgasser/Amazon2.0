@@ -1,32 +1,8 @@
 
 const FileUpload = (props: any) => {
-    const { items, index, setState, array } = props
+    const { items, globalIndex, handleImageUpload, handleImageDelete } = props
 
-    const handleDeleteImage = (i: number) => {
-        const images = [...items]
-        images.splice(i, 1)
-        const newArray = [...array]
-        newArray[index].images = images
-        setState(newArray)
 
-    }
-    const handleImageUpload = async (e: any) => {
-        const listFiles = (e.target.files)
-        const images = [...items]
-
-        for (let i = 0; i < listFiles.length; i++) {
-            const reader = new FileReader()
-            reader.onload = () => {
-                images.push(reader.result)
-                if (items.length + listFiles.length == images.length) {
-                    const newArray = [...array]
-                    newArray[index].images = images
-                    setState(newArray)
-                }
-            }
-            reader.readAsDataURL(listFiles[i])
-        }
-    }
 
     return (
         <div className="flex flex-col gap-3.5 p-3.5">
@@ -41,7 +17,7 @@ const FileUpload = (props: any) => {
                     <input
                         type="file"
                         className="absolute inset-0 m-0 h-full w-full cursor-pointer p-0 opacity-0 outline-none"
-                        onChange={(e) => handleImageUpload(e)}
+                        onChange={(e) => handleImageUpload(e, globalIndex)}
                         accept="image/png, image/jpeg, image/jpg"
                         multiple
                     />
@@ -88,7 +64,7 @@ const FileUpload = (props: any) => {
                                     return (
                                         <div key={index} className="mx-auto h-auto w-full max-w-30 bg-white/20 p-1 backdrop-blur sm:h-44 sm:max-w-44 sm:p-3">
                                             <img src={image}></img>
-                                            <label onClick={() => handleDeleteImage(index)} className="absolute z-1000 top-0 right-0 flex h-6.5 w-6.5 cursor-pointer items-center justify-center rounded-full bg-danger text-white hover:bg-opacity-90 sm:bottom-2 sm:right-2">
+                                            <label onClick={() => handleImageDelete(index, globalIndex)} className="absolute z-1000 top-0 right-0 flex h-6.5 w-6.5 cursor-pointer items-center justify-center rounded-full bg-danger text-white hover:bg-opacity-90 sm:bottom-2 sm:right-2">
                                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="w-5 h-5"> <path strokeLinecap="round" strokeLinejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5m6 4.125l2.25 2.25m0 0l2.25 2.25M12 13.875l2.25-2.25M12 13.875l-2.25 2.25M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z" /> </svg>
                                             </label>
                                         </div>

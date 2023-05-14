@@ -7,20 +7,23 @@ import TextArea from './Components/TextArea';
 import TextInput from './Components/TextInput';
 import { useAppSelector, useAppDispatch } from '../../Redux/Store/hooks';
 import { Link } from 'react-router-dom';
-import { update } from '../../Redux/Edit/productEdit'
-import Buttons from '../UiElements/Buttons';
+// import { update, reset } from '../../Redux/Edit/productEdit'
+import axios from 'axios'
 
 
 const FormElements = () => {
 
   const product = useAppSelector((state) => state.update.product)
-  const dispatch = useAppDispatch()
 
-  const updateState = () => {
-    dispatch(update({ name: 'new name' }))
+
+  const saveProduct = async (method: String) => {
+    if (method === 'CREATE') {
+      const res = await axios.post('http://localhost:3000/api/store/products', { product })
+
+      console.log(res);
+
+    }
   }
-
-  console.log(product);
 
   return (
     <DefaultLayout>
@@ -28,9 +31,9 @@ const FormElements = () => {
       <Link
         to="#"
         className="inline-flex items-center justify-center bg-primary py-4 px-10 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10"
-        onClick={updateState}
+        onClick={() => saveProduct('CREATE')}
       >
-        Button
+        Save
       </Link>
 
       <div className="grid grid-cols-1 gap-9 sm:grid-cols-2">
@@ -43,7 +46,7 @@ const FormElements = () => {
               </h3>
             </div>
             <TextInput defaultValue={product.name} label={"Name"} />
-            <TextArea label={"Description"} />
+            <TextArea defaultValue={product.description} label={"Description"} />
             <Switcher label={"Is Active?"} />
             <DropDown label={"Subcategories"} />
           </div>
@@ -68,4 +71,4 @@ const FormElements = () => {
   );
 };
 
-export default FormElements;
+export default FormElements
