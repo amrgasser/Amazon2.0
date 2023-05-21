@@ -32,7 +32,7 @@ const productSchema = new mongoose.Schema({
         type: String
     },
     variations: [{
-        type: Map
+        type: Object
     }]
 
 }, {

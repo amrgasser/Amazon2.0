@@ -1,14 +1,14 @@
 import Product from "../models/Product.js"
 
 
-// const index = async (req, res, next) => {
-//     try {
-//         const allProducts = await Product.find()
-//         res.status(200).json(allProducts)
-//     } catch (error) {
+const index = async (req, res, next) => {
+    try {
+        const allProducts = await Product.find()
+        res.status(200).json(allProducts)
+    } catch (error) {
 
-//     }
-// }
+    }
+}
 
 const getByCategory = async (req, res, next) => {
     try {
@@ -17,23 +17,24 @@ const getByCategory = async (req, res, next) => {
             data: result
         })
     } catch (error) {
-
+        res.status(500).json({
+            error: error,
+            message: "Unable to fetch resources, please try again"
+        })
     }
 }
 
-const store = async (req, res, next) => {
+const store = async (req, res) => {
     try {
-        console.log(req.body);
-        const newProduct = new Product(req.body)
-        newProduct.save()
+        const newProduct = new Product(req.body.product)
+        const result = await newProduct.save()
         res.status(201).json({
             message: "Product created successfully",
-            data: newProduct
         })
     } catch (error) {
         res.status(401).json({
             message: "Unable to create Product",
-            error
+            error: error
         })
     }
 }
@@ -41,7 +42,7 @@ const store = async (req, res, next) => {
 const update = async (req, res, next) => {
     try {
         let productId = req.params.id
-        Product.findByIdAndUpdate(productId, { $set: req.body })
+        Product.findByIdAndUpdate(productId, { $set: req.body.product })
         const updatedProduct = await Product.findById(productId)
         res.status(201).json(updatedProduct)
     } catch (error) {
@@ -54,7 +55,7 @@ const update = async (req, res, next) => {
 
 const destroy = async (req, res, next) => {
     try {
-        let productId = req.params.ObjectId
+        let productId = req.params.id
         let product = await Product.findByIdAndDelete(productId)
         res.json({
             message: "Product deleted Successfully",
@@ -68,9 +69,17 @@ const destroy = async (req, res, next) => {
 
 const find = async (req, res, next) => {
     try {
-
+        let productId = req.params.id
+        const product = await Product.findById(productId)
+        console.log(productId);
+        res.json({
+            data: product
+        })
     } catch (error) {
-
+        res.status(404).json({
+            error: error,
+            message: "resource not found"
+        })
     }
 }
-export default { find, getByCategory, store, update, destroy }
+export default { find, getByCategory, store, update, destroy, index }
