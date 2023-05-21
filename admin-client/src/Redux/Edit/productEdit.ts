@@ -3,7 +3,7 @@ import product from './testProduct'
 
 
 const initialState: any = {
-    product: product
+    product: product,
 }
 
 const editSlice = createSlice({
@@ -13,10 +13,11 @@ const editSlice = createSlice({
         update(state, action: PayloadAction<any>) {
             const newParams = action.payload
             state.product = { ...state.product, ...newParams };
+            console.log(state.product);
         },
         reset(state) {
             state.product = {}
-        }
+        },
     }
 })
 

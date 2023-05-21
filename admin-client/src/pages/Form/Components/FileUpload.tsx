@@ -2,8 +2,6 @@
 const FileUpload = (props: any) => {
     const { items, globalIndex, handleImageUpload, handleImageDelete } = props
 
-
-
     return (
         <div className="flex flex-col gap-3.5 p-3.5">
             <div>
