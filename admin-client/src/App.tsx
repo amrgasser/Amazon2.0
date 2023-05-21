@@ -6,7 +6,7 @@ import SignUp from './pages/Authentication/SignUp';
 import Calendar from './pages/Calendar';
 import Chart from './pages/Chart';
 import ECommerce from './pages/Dashboard/ECommerce';
-import FormElements from './pages/Form/FormElements';
+import MultiColorProductFormElements from './pages/Form/ColorProductFormElements';
 import FormLayout from './pages/Form/FormLayout';
 import Profile from './pages/Profile';
 import Settings from './pages/Settings';
@@ -38,7 +38,7 @@ function App() {
         <Route path="/" element={<ECommerce />} />
         <Route path="/calendar" element={<Calendar />} />
         <Route path="/profile" element={<Profile />} />
-        <Route path="/forms/form-elements" element={<FormElements />} />
+        <Route path="/forms/form-elements" element={<MultiColorProductFormElements />} />
         <Route path="/forms/form-layout" element={<FormLayout />} />
         <Route path="/tables" element={<Tables />} />
         <Route path="/settings" element={<Settings />} />
