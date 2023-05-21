@@ -1,7 +1,6 @@
-import { useState } from 'react';
 
-const SwitcherOne = () => {
-  const [enabled, setEnabled] = useState<boolean>(false);
+const SwitcherOne = (props: any) => {
+  const { onClick, active } = props
 
   return (
     <div>
@@ -14,15 +13,12 @@ const SwitcherOne = () => {
             type="checkbox"
             id="toggle1"
             className="sr-only"
-            onChange={() => {
-              setEnabled(!enabled);
-            }}
+            onChange={onClick}
           />
           <div className="block h-8 w-14 rounded-full bg-meta-9 dark:bg-[#5A616B]"></div>
           <div
-            className={`absolute left-1 top-1 h-6 w-6 rounded-full bg-white transition ${
-              enabled && '!right-1 !translate-x-full !bg-primary dark:!bg-white'
-            }`}
+            className={`absolute left-1 top-1 h-6 w-6 rounded-full bg-white transition ${active && '!right-1 !translate-x-full !bg-primary dark:!bg-white'
+              }`}
           ></div>
         </div>
       </label>
